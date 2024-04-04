@@ -14,7 +14,7 @@ jobs:
         with:
           deno-version: v1.x
       - name: export
-        run: deno run --allow-net --allow-read --allow-write download.ts
+        run: deno run --allow-net --allow-read --allow-write download.js
       - name: commit and push
         run: |
           git config --global user.email "workflow@example.com"
