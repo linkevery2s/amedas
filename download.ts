@@ -4,8 +4,8 @@ const url = 'https://www.data.jma.go.jp/stats/data/mdrr/pre_rct/alltable/pre3h00
 
 try {
   const destination: Destination = {
-    file: 'data.csv',
-    dir: './'
+    file: 'temp.csv',
+    dir: './data/'
   }
 
   const fileObj = await download(url, destination);
