@@ -5,4 +5,4 @@ const data = await res.text();
 
 const result = await parse(data);
 
-await Deno.writeTextFile("data/all.json", JSON.stringify(result));
+await Deno.writeTextFile("./data/all.json", JSON.stringify(result));
