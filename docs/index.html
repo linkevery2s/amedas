@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<title>日本の地形テキスト</title>
+
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+  <meta charset="UTF-8" name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+
+  <style type="text/css">
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      font-family: "Meiryo", "Hiragino Maru Gothic Pro", sans-serif;
+    }
+
+    body {
+      background: #000000;
+    }
+
+    #container {
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+    }
+  </style>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MPP84V2NHB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-MPP84V2NHB');
+  </script>
+
+</head>
+
+<body>
+
+  <div id="container"></div>
+
+</body>
+
+<script type="module">
+
+
+    const res = await fetch("https://raw.githubusercontent.com/linkevery2s/amedas/main/data/all.json");
+    const data = await res.json();
+
+    const area = await fetch("https://raw.githubusercontent.com/linkevery2s/heatstroke/master/docs/area/st1.json");
+    const area_data = await area.json();
+
+    for(let j = 0; j < 840; j++){
+    Object.assign(data[j], area_data[j]);
+
+    };
+
+    console.log(Object.keys(data[0])[11]);
+
+
+  const { DeckGL, TileLayer, BitmapLayer, HexagonLayer } = deck;
+
+  const INITIAL_VIEW_STATE = {
+    longitude: 139.779,
+    latitude: 35.666,
+    zoom: 5,
+    minZoom: 3,
+    pitch: 50,
+    maxPitch: 85
+  };
+
+  const tileLayer = new TileLayer({
+    data: 'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    minZoom: 0,
+    maxZoom: 19,
+
+    renderSubLayers: props => {
+      const {
+        bbox: {
+          west,
+          south,
+          east,
+          north
+        }
+      } = props.tile;
+
+      return new BitmapLayer(props, {
+        data: null,
+        image: props.data,
+        bounds: [west, south, east, north]
+      });
+    }
+  });
+
+  const tooltip = (d) => {
+
+    if (!d || !d.object) return null;
+    let obj = d.object;
+
+    const html_tr = ["<table>", obj["25日の最大値(mm)"], "</table>"].join("\n");
+
+    return {
+      html: html_tr,
+      style: {
+        background: "rgba(255,255,255,0.7)",
+        color: "#000000"
+      }
+    };
+  };
+
+  const layer = new HexagonLayer({
+    id: 'hexagon-layer',
+    data: data,
+    pickable: true,
+    extruded: true,
+    getElevationWeight: d => Number(d[Object.keys(data[0])[11]]),
+    elevationAggregation: 'MAX',
+    getColorWeight: point => Number(point[Object.keys(data[0])[11]]),
+    colorAggregation: 'MAX',
+    radius: 7000,
+    elevationScale: 4,
+    elevationRange: [0, 100000],
+    getPosition: p => [Number(p.LNG), Number(p.LAT)]
+  });
+
+  const deckgl = new DeckGL({
+    container: 'container',
+    initialViewState: INITIAL_VIEW_STATE,
+    controller: {
+      touchRotate: true
+    },
+    getTooltip: tooltip,
+    layers: [
+      tileLayer, layer
+    ]
+  });
+</script>
+
+</html>
