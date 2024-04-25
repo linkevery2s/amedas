@@ -107,7 +107,7 @@ console.log(data.length);
     if (!d || !d.object) return null;
     let obj = d.object;
 
-    const html_tr = ["<table>", Object.keys(obj[0])[1] + "<br>" + obj.colorValue, "</table>"].join("\n");
+    const html_tr = ["<table>", obj.観測地点番号 + "<br>" + obj.colorValue, "</table>"].join("\n");
 
     return {
       html: html_tr,
