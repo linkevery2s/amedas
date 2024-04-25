@@ -106,7 +106,7 @@
     if (!d || !d.object) return null;
     let obj = d.object;
 
-    const html_tr = ["<table>", obj["25日の最大値(mm)"], "</table>"].join("\n");
+    const html_tr = ["<table>", obj.colorValue, "</table>"].join("\n");
 
     return {
       html: html_tr,
