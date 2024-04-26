@@ -1,12 +1,14 @@
 <!DOCTYPE HTML>
 <html lang="ja">
-<title>日本の地形テキスト</title>
+<title>アメダス降水量の可視化</title>
 
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
   <meta charset="UTF-8" name="viewport"
     content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+  <script src='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js'></script>
+  <link href='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet' />
 
   <style type="text/css">
     html,
@@ -56,10 +58,10 @@
     const res = await fetch("https://raw.githubusercontent.com/linkevery2s/amedas/main/data/all.json");
     const data = await res.json();
 
-    const area = await fetch("https://raw.githubusercontent.com/linkevery2s/heatstroke/master/docs/area/st1.json");
+    const area = await fetch("./area.json");
     const area_data = await area.json();
 
-    for(let j = 0; j < 840; j++){
+    for(let j = 0; j < data.length; j++){
     Object.assign(data[j], area_data[j]);
 
     };
@@ -71,12 +73,13 @@ console.log(data.length);
   const { DeckGL, TileLayer, BitmapLayer, HexagonLayer } = deck;
 
   const INITIAL_VIEW_STATE = {
-    longitude: 139.779,
+    longitude: 132.779,
     latitude: 35.666,
-    zoom: 5,
+    zoom: 4,
     minZoom: 3,
     pitch: 50,
-    maxPitch: 85
+    maxPitch: 85,
+    bearing: -20
   };
 
   const tileLayer = new TileLayer({
@@ -107,7 +110,7 @@ console.log(data.length);
     if (!d || !d.object) return null;
     let obj = d.object;
 
-    const html_tr = ["<table>", obj.position + "<br>" + obj.colorValue, "</table>"].join("\n");
+    const html_tr = ["<table>", obj.colorValue, "</table>"].join("\n");
 
     return {
       html: html_tr,
@@ -118,6 +121,15 @@ console.log(data.length);
     };
   };
 
+  const colorRange  = [
+    [0, 255, 255, 127],
+    [63, 255, 0, 127],
+    [255, 255, 0, 127],
+    [255, 127, 60, 170],
+    [255, 0, 0, 212],
+    [152, 0, 38, 255]
+    ];
+
   const layer = new HexagonLayer({
     id: 'hexagon-layer',
     data: data,
@@ -127,21 +139,23 @@ console.log(data.length);
     elevationAggregation: 'MAX',
     getColorWeight: point => Number(point[Object.keys(data[0])[9]]),
     colorAggregation: 'MAX',
+    colorRange,
     radius: 7000,
     elevationScale: 4,
     elevationRange: [0, 100000],
-    getPosition: p => [Number(p.LNG), Number(p.LAT)]
+    getPosition: p => [Number(p.lng), Number(p.lat)]
   });
 
   const deckgl = new DeckGL({
     container: 'container',
+    mapStyle: 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json',
     initialViewState: INITIAL_VIEW_STATE,
     controller: {
       touchRotate: true
     },
     getTooltip: tooltip,
     layers: [
-      tileLayer, layer
+      layer
     ]
   });
 </script>
