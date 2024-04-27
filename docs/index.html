@@ -179,7 +179,9 @@
     if (!d || !d.object) return null;
     let obj = d.object;
 
-    const html_tr = ["<table>", "降水量：" + obj.colorValue + "mm", "</table>"].join("\n");
+    console.log(obj.points[0].source.name);
+
+    const html_tr = ["<table>", obj.points[0].source.name + "：" + obj.elevationValue + "mm", "</table>"].join("\n");
 
     return {
       html: html_tr,
