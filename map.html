@@ -58,7 +58,7 @@
   const res = await fetch("https://raw.githubusercontent.com/linkevery2s/amedas/main/data/3h.json");
   const data = await res.json();
 
-  const area = await fetch("./area.json");
+  const area = await fetch("https://raw.githubusercontent.com/linkevery2s/amedas/main/data/area.json");
   const area_data = await area.json();
 
   for (let j = 0; j < data.length; j++) {
