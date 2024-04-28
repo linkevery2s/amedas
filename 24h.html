@@ -1,0 +1,226 @@
+<!DOCTYPE HTML>
+<html lang="ja">
+<title>24時間 降雨量</title>
+
+<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+  <meta charset="UTF-8" name="viewport"
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style type="text/css">
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #000000;
+    }
+
+    #container {
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+    }
+  </style>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MPP84V2NHB"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-MPP84V2NHB');
+  </script>
+
+</head>
+
+<body>
+
+  <div id="container"></div>
+
+</body>
+
+<script type="module">
+
+  const res = await fetch("https://raw.githubusercontent.com/linkevery2s/amedas/main/data/24h.json");
+  const data = await res.json();
+
+  const area = await fetch("https://raw.githubusercontent.com/linkevery2s/amedas/main/data/area.json");
+  const area_data = await area.json();
+
+  for (let j = 0; j < data.length; j++) {
+    Object.assign(data[j], area_data[j]);
+
+  };
+
+  console.log(Object.keys(data[0])[11]);
+
+  console.log(data.length);
+
+  // 最大値を得る
+  const aryMax = function (a, b) { return Math.max(a, b); }
+
+  let ary = [];
+
+  for (let j = 0; j < data.length; j++) {
+    ary[j] = data[j]["現在値(mm)"];
+  };
+  console.log(ary);
+
+  let max = ary.reduce(aryMax);
+
+  console.log(max);
+
+  // 色分け
+  let color;
+
+  if (max < 30) {
+
+    color = [[0, 255, 255, 255], [0, 255, 255, 255], [0, 255, 255, 255], [0, 255, 255, 255], [0, 255, 255, 255], [63, 255, 0, 255]];
+
+  } else if (30 < max && max < 60) {
+
+    color = [[0, 255, 255, 255], [0, 255, 255, 255], [0, 255, 255, 255], [0, 255, 255, 255], [63, 255, 0, 255], [255, 255, 0, 255]];
+
+  } else if (60 < max && max < 100) {
+
+    color = [[0, 255, 255, 255], [0, 255, 255, 255], [0, 255, 255, 255], [63, 255, 0, 255], [255, 255, 0, 255], [255, 127, 60, 255]];
+
+  } else if (100 < max && max < 150) {
+
+    color = [[0, 255, 255, 255], [0, 255, 255, 255], [63, 255, 0, 255], [255, 255, 0, 255], [255, 127, 60, 255], [255, 0, 0, 255]];
+
+  } else {
+
+    color = [[0, 255, 255, 255], [63, 255, 0, 255], [255, 255, 0, 255], [255, 127, 60, 255], [255, 0, 0, 255], [152, 0, 38, 255]];
+
+  }
+
+  console.log(color);
+
+  // 高さ
+  let scale;
+
+  if (max < 30) {
+
+    scale = 20;
+
+  } else if (30 < max && max < 60) {
+
+    scale = 80;
+
+  } else if (60 < max && max < 100) {
+
+    scale = 120;
+
+  } else if (100 < max && max < 150) {
+
+    scale = 250;
+
+  } else {
+
+    scale = 400;
+
+  }
+
+  console.log(scale);
+
+  const { DeckGL, TileLayer, BitmapLayer, HexagonLayer } = deck;
+
+  const INITIAL_VIEW_STATE = {
+    longitude: 137.779,
+    latitude: 35.666,
+    zoom: 4,
+    minZoom: 3,
+    pitch: 50,
+    maxPitch: 85,
+    bearing: -20
+  };
+
+  const tilelayer = new TileLayer({
+    data: 'https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{scale}.png',
+    minZoom: 0,
+    maxZoom: 19,
+
+    renderSubLayers: props => {
+      const {
+        bbox: {
+          west,
+          south,
+          east,
+          north
+        }
+      } = props.tile;
+
+      return new BitmapLayer(props, {
+        data: null,
+        image: props.data,
+        bounds: [west, south, east, north]
+      });
+    }
+  });
+
+  const tooltip = (d) => {
+
+    if (!d || !d.object) return null;
+    let obj = d.object;
+
+    console.log(obj.points[0].source.name);
+
+    const html_tr = ["<table>", obj.points[0].source.name + "：" + obj.elevationValue + "mm", "</table>"].join("\n");
+
+    return {
+      html: html_tr,
+      style: {
+        background: "rgba(255,255,255,0.7)",
+        color: "#000000"
+      }
+    };
+  };
+
+  /*const colorRange = [
+    [0, 255, 255, 255],
+    [63, 255, 0, 255],
+    [255, 255, 0, 255],
+    [255, 127, 60, 255],
+    [255, 0, 0, 255],
+    [152, 0, 38, 255]
+  ];*/
+
+  const layer = new HexagonLayer({
+    id: 'hexagon-layer',
+    data: data,
+    pickable: true,
+    extruded: true,
+    getElevationWeight: d => Number(d[Object.keys(data[0])[9]]),
+    elevationAggregation: 'MAX',
+    getColorWeight: point => Number(point[Object.keys(data[0])[9]]),
+    colorAggregation: 'MAX',
+    colorRange: color,
+    radius: 7000,
+    elevationScale: scale,
+    elevationRange: [0, 3000],
+    getPosition: p => [Number(p.lng), Number(p.lat)]
+  });
+
+  const deckgl = new DeckGL({
+    container: 'container',
+    initialViewState: INITIAL_VIEW_STATE,
+    controller: {
+      touchRotate: true
+    },
+    getTooltip: tooltip,
+    layers: [
+      tilelayer, layer
+    ]
+  });
+</script>
+
+</html>

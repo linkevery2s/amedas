@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html lang="ja">
-<title>アメダス降水量の可視化</title>
+<title>3時間 降雨量</title>
 
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
   <meta charset="UTF-8" name="viewport"
@@ -49,9 +49,7 @@
 
 <script type="module">
 
-  let res;
-
-  res = await fetch("https://raw.githubusercontent.com/linkevery2s/amedas/main/data/3h.json");
+  const res = await fetch("https://raw.githubusercontent.com/linkevery2s/amedas/main/data/3h.json");
   const data = await res.json();
 
   const area = await fetch("https://raw.githubusercontent.com/linkevery2s/amedas/main/data/area.json");

@@ -110,8 +110,7 @@
 
         const main = document.querySelector('.main');
 
-        main.innerHTML = '<iframe src="./map.html"></iframe>';
-
+        main.innerHTML = '<iframe src="./3h.html"></iframe>';
 
         /* ナビゲーション表示 */
         const btn = document.querySelector('.btn-menu');
@@ -121,6 +120,39 @@
             nav.style.display = "block";
             $('#navi').toggle();
         });
+
+        /* map切り替え */
+        const map_1h = document.querySelector('.map-1h');
+        const map_3h = document.querySelector('.map-3h');
+        const map_6h = document.querySelector('.map-6h');
+        const map_12h = document.querySelector('.map-12h');
+        const map_24h = document.querySelector('.map-24h');
+
+        map_1h.addEventListener('click', () => {
+            main.innerHTML = '<iframe src="./1h.html"></iframe>';
+            $('#navi').toggle();
+        });
+
+        map_3h.addEventListener('click', () => {
+            main.innerHTML = '<iframe src="./3h.html"></iframe>';
+            $('#navi').toggle();
+        });
+
+        map_6h.addEventListener('click', () => {
+            main.innerHTML = '<iframe src="./6h.html"></iframe>';
+            $('#navi').toggle();
+        });
+
+        map_12h.addEventListener('click', () => {
+            main.innerHTML = '<iframe src="./12h.html"></iframe>';
+            $('#navi').toggle();
+        });
+
+        map_24h.addEventListener('click', () => {
+            main.innerHTML = '<iframe src="./24h.html"></iframe>';
+            $('#navi').toggle();
+        });
+
 
     </script>
     <!-- Google tag (gtag.js) -->
@@ -144,11 +176,11 @@
         <div id="navi">
             <nav>
                 <ul>
-                    <li class="1h">1時間 降雨量</li>
-                    <li class="3h">3時間 降雨量</li>
-                    <li class="6h">6時間 降雨量</li>
-                    <li class="12h">12時間 降雨量</li>
-                    <li class="24h">24時間 降雨量</li>
+                    <li class="map-1h">1時間 降雨量</li>
+                    <li class="map-3h">3時間 降雨量</li>
+                    <li class="map-6h">6時間 降雨量</li>
+                    <li class="map-12h">12時間 降雨量</li>
+                    <li class="map-24h">24時間 降雨量</li>
                 </ul>
             </nav>
         </div>
