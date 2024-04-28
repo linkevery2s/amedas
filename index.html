@@ -8,11 +8,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta property="og:title" content="Japan Precipitation" />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://japan-precipitation.netlify.app/ogp.png" />
+    <meta property="og:image" content="https://japan-precipitation.netlify.app/images/ogp.png" />
     <meta name="description" content="気象庁のAMEDAS降水量をDeck glのhexagonレイヤーを用いて可視化するアプリケーションです。ゲリラ豪雨など、降水量を調べたい時に役に立ちます。" />
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Japan Precipitation" />
-    <meta name="twitter:image" content="https://japan-precipitation.netlify.app/ogp.png" />
+    <meta name="twitter:image" content="https://japan-precipitation.netlify.app/images/ogp.png" />
     <meta name="author" content="仁志">
     <meta name="keywords" content="アメダス,amedas,気象庁,deckgl,hexagon,可視化" />
     <link rel="apple-touch-icon" href="./images/apple-touch-icon.png">
@@ -36,6 +36,12 @@
             z-index: 1;
             background: #0095d9;
             color: #ffffff;
+        }
+
+        .update {
+            position: fixed;
+            top: 60px;
+            right: 5px;
         }
 
         .btn-menu {
@@ -96,6 +102,12 @@
             z-index: 0;
         }
 
+        .fb_share {
+            position: fixed;
+            bottom: 53px;
+            left: 3px;
+        }
+
         .footer {
             position: fixed;
             width: 100%;
@@ -108,9 +120,19 @@
 
     <script type="module">
 
+        /* 初期画面 */
         const main = document.querySelector('.main');
-
         main.innerHTML = '<iframe src="./3h.html"></iframe>';
+
+        /* Last Update */
+        const res = await fetch("./data/lastupdate.json");
+        const update_date = await res.json();
+
+        console.log(update_date[0].lastupdate);
+
+        const up_date = document.querySelector('.update');
+
+        up_date.innerHTML = "データ更新日時：" + update_date[0].lastupdate;
 
         /* ナビゲーション表示 */
         const btn = document.querySelector('.btn-menu');
@@ -165,6 +187,15 @@
         gtag('config', 'G-MPP84V2NHB');
     </script>
 
+    <link rel="manifest" href="./manifest.json">
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service-worker.js').then(function () {
+                console.log('Service Worker Registered');
+            });
+        }
+    </script>
+
 </head>
 
 <body>
@@ -185,9 +216,18 @@
             </nav>
         </div>
 
+        <div class="update text-xs"></div>
+
     </div>
 
     <div class="main">
+
+    </div>
+
+    <div class="fb_share">
+
+        <div class="fb-like" data-href="https://japan-precipitation.netlify.app/" data-width=""
+            data-layout="button_count" data-action="like" data-size="small" data-share="true"></div>
 
     </div>
 
@@ -195,13 +235,18 @@
         <div class="grid gap-4 grid-cols-3 grid-rows-1">
             <a href="./index.html">
                 <div><i class="fa-solid fa-house"></i> ホーム</div>
-              </a>
+            </a>
             <div class="manual-btn"><i class="fa-solid fa-book-open"></i> 使い方</div>
             <div class="share-btn"><i class="fa-solid fa-comments"></i> シェア</div>
-          </div>
+        </div>
 
         <span class="text-xs">src on GitHub. &copy 齋藤　仁志</span>
     </div>
+
+    <!-- Facebookシェアボタン -->
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v16.0"
+        nonce="eVvix2r0"></script>
 
 </body>
 
