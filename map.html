@@ -7,8 +7,7 @@
     content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
-  <script src='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.js'></script>
-  <link href='https://unpkg.com/maplibre-gl@2.4.0/dist/maplibre-gl.css' rel='stylesheet' />
+  <script src="https://cdn.tailwindcss.com"></script>
 
   <style type="text/css">
     html,
@@ -17,10 +16,6 @@
       height: 100%;
       margin: 0;
       padding: 0;
-    }
-
-    html {
-      font-family: "Meiryo", "Hiragino Maru Gothic Pro", sans-serif;
     }
 
     body {
@@ -151,8 +146,8 @@
     bearing: -20
   };
 
-  const tileLayer = new TileLayer({
-    data: 'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  const tilelayer = new TileLayer({
+    data: 'https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{scale}.png',
     minZoom: 0,
     maxZoom: 19,
 
@@ -219,14 +214,13 @@
 
   const deckgl = new DeckGL({
     container: 'container',
-    mapStyle: 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json',
     initialViewState: INITIAL_VIEW_STATE,
     controller: {
       touchRotate: true
     },
     getTooltip: tooltip,
     layers: [
-      layer
+      tilelayer, layer
     ]
   });
 </script>

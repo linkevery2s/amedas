@@ -17,15 +17,44 @@
     <meta name="keywords" content="アメダス,amedas,気象庁,deckgl,hexagon,可視化" />
     <link rel="apple-touch-icon" href="./images/apple-touch-icon.png">
     <link rel="icon" href="./images/apple-touch-icon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
+        .header {
+            width: 100%;
+            z-index: 1;
+        }
 
+        .main {
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            position: absolute;
+        }
 
+        iframe {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            position: absolute;
+            z-index: 0;
+        }
 
+        .footer {
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            z-index: 1;
+        }
     </style>
 
     <script type="module">
 
+        const main = document.querySelector('.main');
+
+        main.innerHTML = '<iframe src="./map.html"></iframe>';
 
     </script>
     <!-- Google tag (gtag.js) -->
@@ -42,9 +71,18 @@
 
 <body>
 
+    <div class="header text-center text-2xl">Japan Precipitation
 
+    </div>
 
+    <div class="main">
 
+    </div>
+
+    <div class="footer text-center text-xs">
+
+        src on GitHub. &copy 齋藤　仁志
+    </div>
 
 </body>
 
