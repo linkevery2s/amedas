@@ -49,8 +49,9 @@
 
 <script type="module">
 
+  let res;
 
-  const res = await fetch("https://raw.githubusercontent.com/linkevery2s/amedas/main/data/3h.json");
+  res = await fetch("https://raw.githubusercontent.com/linkevery2s/amedas/main/data/3h.json");
   const data = await res.json();
 
   const area = await fetch("https://raw.githubusercontent.com/linkevery2s/amedas/main/data/area.json");
@@ -66,7 +67,6 @@
   console.log(data.length);
 
   // 最大値を得る
-
   const aryMax = function (a, b) { return Math.max(a, b); }
 
   let ary = [];
@@ -137,7 +137,7 @@
   const { DeckGL, TileLayer, BitmapLayer, HexagonLayer } = deck;
 
   const INITIAL_VIEW_STATE = {
-    longitude: 132.779,
+    longitude: 137.779,
     latitude: 35.666,
     zoom: 4,
     minZoom: 3,
