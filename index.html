@@ -69,7 +69,7 @@
         }
 
         nav {
-            background: rgba(195, 216, 37, 0.8);
+            background: rgba(56, 180, 139, .8);
             position: absolute;
             top: 3.5rem;
             z-index: 9;
@@ -101,7 +101,7 @@
         }
 
         nav li:hover {
-            background: rgba(56, 180, 139, .8);
+            background: rgba(195, 216, 37, 0.8); 
         }
 
         .main {
@@ -237,6 +237,8 @@
         const map_6h = document.querySelector('.map-6h');
         const map_12h = document.querySelector('.map-12h');
         const map_24h = document.querySelector('.map-24h');
+        const rader = document.querySelector('.rader');
+        const himawari = document.querySelector('.himawari');
 
         map_1h.addEventListener('click', () => {
             main.innerHTML = '<iframe src="./1h.html"></iframe>';
@@ -266,6 +268,55 @@
             main.innerHTML = '<iframe src="./24h.html"></iframe>';
             $('#navi').toggle();
             precip_title.innerHTML = "24時間 降雨量";
+        });
+
+        const res2 = await fetch('https://www.jma.go.jp/bosai/jmatile/data/nowc/targetTimes_N1.json');
+        const data2 = await res2.json();
+
+        rader.addEventListener('click', () => {
+            main.innerHTML = '<iframe src="./rader.html"></iframe>';
+            $('#navi').toggle();
+            precip_title.innerHTML = "雨雲レーダー";
+
+            let day_time = data2[0].basetime;
+            let valid_time = data2[0].validtime;
+            let year = day_time.slice(0, 4);
+            let month = day_time.slice(4, 6);
+            let day = day_time.slice(6, 8);
+            let jikoku_h = parseInt(day_time.slice(8, 10), 10) + 9;
+            if (jikoku_h > 23) {
+                jikoku_h = jikoku_h - 24;
+            } else { }
+
+            let jikoku_m = day_time.slice(10, 12);
+
+            up_date.innerHTML = "データ更新日時：" + year + "年" + month + "月" + day + "日" + jikoku_h + "時" + jikoku_m + "分";
+
+        });
+
+        const res3 = await fetch('https://www.jma.go.jp/bosai/himawari/data/satimg/targetTimes_fd.json');
+        const data3 = await res3.json();
+
+
+        himawari.addEventListener('click', () => {
+            main.innerHTML = '<iframe src="./himawari.html"></iframe>';
+            $('#navi').toggle();
+            precip_title.innerHTML = "気象衛星ひまわり";
+
+            let day_time = data3[data3.length - 1].basetime;
+            let valid_time = data3[data3.length - 1].validtime;
+            let year = day_time.slice(0, 4);
+            let month = day_time.slice(4, 6);
+            let day = day_time.slice(6, 8);
+            let jikoku_h = parseInt(day_time.slice(8, 10), 10) + 9;
+            if (jikoku_h > 23) {
+                jikoku_h = jikoku_h - 24;
+            } else { }
+
+            let jikoku_m = day_time.slice(10, 12);
+
+            up_date.innerHTML = "データ更新日時：" + year + "年" + month + "月" + day + "日" + jikoku_h + "時" + jikoku_m + "分";
+
         });
 
         /* ポップアップ表示 */
@@ -339,8 +390,8 @@
                     <li class="map-6h">6時間 降雨量</li>
                     <li class="map-12h">12時間 降雨量</li>
                     <li class="map-24h">24時間 降雨量</li>
-                    <li class="map-24h">雨雲レーダー</li>
-                    <li class="map-24h">気象衛星ひまわり画像</li>
+                    <li class="rader">雨雲レーダー</li>
+                    <li class="himawari">気象衛星ひまわり画像</li>
                 </ul>
             </nav>
         </div>
@@ -442,8 +493,8 @@
 
         <span class="text-xs link">src on <a href="https://github.com/linkevery2s/amedas" target="_blank">GitHub</a>.
             &copy <a href="https://hitoshi2s.netlify.app/" target="_blank">齋藤　仁志</a>. <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSf-WMoBJRTdA1bmN_SmQ-bsNGeLs1l737d3c9BUNuErjH-KBw/viewform"
-            target="_blank">お問い合わせ</a></span>
+                href="https://docs.google.com/forms/d/e/1FAIpQLSf-WMoBJRTdA1bmN_SmQ-bsNGeLs1l737d3c9BUNuErjH-KBw/viewform"
+                target="_blank">お問い合わせ</a></span>
     </div>
 
     <!-- Facebookシェアボタン -->
@@ -454,3 +505,5 @@
 </body>
 
 </html>
+
+<!-- &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'

@@ -25,16 +25,24 @@
 <body>
   <div id='map'></div>
   <script type="module">
-    const res = await fetch('https://www.jma.go.jp/bosai/jmatile/data/nowc/targetTimes_N1.json');
+    const res = await fetch('https://www.jma.go.jp/bosai/himawari/data/satimg/targetTimes_fd.json');
     const data = await res.json();
 
-    let day_time = data[0].basetime;
-    let valid_time = data[0].validtime;
+    let day_time = data[data.length - 1].basetime;
+    let valid_time = data[data.length - 1].validtime;
 
     const style = {
       "version": 8,
 
       "sources": {
+        "tiri": {
+          "type": "vector",
+          "tiles": [
+            "https://cyberjapandata.gsi.go.jp/xyz/experimental_bvmap/{z}/{x}/{y}.pbf"
+            ],
+          "minzoom": 2,
+          "maxzoom": 8
+        },
         "back": {
           "type": "raster",
           "tiles": [
@@ -47,7 +55,7 @@
         "back2": {
           "type": "raster",
           "tiles": [
-            `https://www.jma.go.jp/bosai/jmatile/data/nowc/${day_time}/none/${valid_time}/surf/hrpns/{z}/{x}/{y}.png`
+            `https://www.jma.go.jp/bosai/himawari/data/satimg/${day_time}/fd/${valid_time}/B13/TBB/{z}/{x}/{y}.jpg`
           ],
           "tileSize": 256,
           "minzoom": 2,
@@ -59,14 +67,27 @@
         "type": "raster",
         "source": "back",
         "minzoom": 2,
-        "maxzoom": 18,
+        "maxzoom": 8,
       },
       {
         "id": "back2",
         "type": "raster",
         "source": "back2",
         "minzoom": 2,
-        "maxzoom": 18,
+        "maxzoom": 8,
+      },
+      {
+        "id": "coastline",
+        "type": "line",
+        "source": "tiri",
+        "source-layer": "coastline",
+        "minzoom": 2,
+        "maxzoom": 8,
+        "filter": ["==", ["geometry-type"], "LineString"],
+        "paint": {
+          "line-color": "#fef263",
+          "line-width": 2
+        }
       }
       ]
 
@@ -77,6 +98,8 @@
       style: style,
       center: [137.779, 35.666],
       zoom: 4,
+      minZoom: 4,
+      maxZoom: 4.4,
       pitch: 50,
       bearing: -20,
       hash: true,
