@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html lang="ja">
-<title>1時間 降雨量</title>
+<title>雨雲レーダー</title>
 
 <head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
   <meta charset="UTF-8" name="viewport"
@@ -49,96 +49,22 @@
 
 <script type="module">
 
-  const res = await fetch("https://raw.githubusercontent.com/linkevery2s/amedas/main/data/1h.json");
+  const res = await fetch('https://www.jma.go.jp/bosai/jmatile/data/nowc/targetTimes_N1.json');
   const data = await res.json();
 
-  const area = await fetch("https://raw.githubusercontent.com/linkevery2s/amedas/main/data/area.json");
-  const area_data = await area.json();
+  let day_time = data[0].basetime;
+  let valid_time = data[0].validtime;
+  let year = day_time.slice(0, 4);
+  let month = day_time.slice(4, 6);
+  let day = day_time.slice(6, 8);
+  let jikoku_h = parseInt(day_time.slice(8, 10), 10) + 9;
+  if (jikoku_h > 23) {
+    jikoku_h = jikoku_h - 24;
+  } else { }
 
-  for (let j = 0; j < data.length; j++) {
-    Object.assign(data[j], area_data[j]);
+  let jikoku_m = day_time.slice(10, 12);
 
-  };
-
-  console.log(Object.keys(data[0])[11]);
-
-  console.log(data.length);
-
-  // 最大値を得る
-  const aryMax = function (a, b) { return Math.max(a, b); }
-
-  let ary = [];
-
-  for (let j = 0; j < data.length; j++) {
-    ary[j] = data[j]["現在値(mm)"];
-  };
-  console.log(ary);
-
-  let max = ary.reduce(aryMax);
-
-  console.log(max);
-
-  // 色分け
-  let color;
-
-  if (max <= 10) {
-
-    color = [[0, 255, 255, 255], [0, 255, 255, 255], [0, 255, 255, 255], [0, 255, 255, 255], [0, 255, 255, 255], [0, 255, 255, 255]];
-
-  } else if (max <= 20) {
-
-    color = [[0, 255, 255, 255], [0, 255, 255, 255], [0, 255, 255, 255], [0, 255, 255, 255], [0, 255, 255, 255], [63, 255, 0, 255]];
-
-  } else if (max <= 30) {
-
-    color = [[0, 255, 255, 255], [0, 255, 255, 255], [0, 255, 255, 255], [0, 255, 255, 255], [63, 255, 0, 255], [255, 255, 0, 255]];
-
-  } else if (max <= 50) {
-
-    color = [[0, 255, 255, 255], [0, 255, 255, 255], [0, 255, 255, 255], [63, 255, 0, 255], [255, 255, 0, 255], [255, 127, 60, 255]];
-
-  } else if (max <= 80) {
-
-    color = [[0, 255, 255, 255], [0, 255, 255, 255], [63, 255, 0, 255], [255, 255, 0, 255], [255, 127, 60, 255], [255, 0, 0, 255]];
-
-  } else if (max > 80) {
-
-    color = [[0, 255, 255, 255], [63, 255, 0, 255], [255, 255, 0, 255], [255, 127, 60, 255], [255, 0, 0, 255], [152, 0, 38, 255]];
-
-  }
-
-  console.log(color);
-
-  // 高さ
-  let scale;
-
-  if (max <= 10) {
-
-    scale = 10;
-
-  } else if (max <= 20) {
-
-    scale = 20;
-
-  } else if (max <= 30) {
-
-    scale = 80;
-
-  } else if (max <= 50) {
-
-    scale = 120;
-
-  } else if (max <= 80) {
-
-    scale = 250;
-
-  } else if (max > 80) {
-
-    scale = 400;
-
-  }
-
-  console.log(scale);
+  //time_stamp.innerHTML = year + "年" + month + "月" + day + "日" + jikoku_h + "時" + jikoku_m + "分";
 
   const { DeckGL, TileLayer, BitmapLayer, HexagonLayer } = deck;
 
@@ -175,47 +101,27 @@
     }
   });
 
-  const tooltip = (d) => {
+  const layer = new TileLayer({
+    data: 'https://www.jma.go.jp/bosai/jmatile/data/nowc/${day_time}/none/${valid_time}/surf/hrpns/{z}/{x}/{y}.png.com/dark_nolabels/{z}/{x}/{y}{scale}.png',
+    minZoom: 0,
+    maxZoom: 19,
 
-    if (!d || !d.object) return null;
-    let obj = d.object;
+    renderSubLayers: props => {
+      const {
+        bbox: {
+          west,
+          south,
+          east,
+          north
+        }
+      } = props.tile;
 
-    console.log(obj.points[0].source.name);
-
-    const html_tr = ["<table>", obj.points[0].source.name + "：" + obj.elevationValue + "mm", "</table>"].join("\n");
-
-    return {
-      html: html_tr,
-      style: {
-        background: "rgba(255,255,255,0.7)",
-        color: "#000000"
-      }
-    };
-  };
-
-  /*const colorRange = [
-    [0, 255, 255, 255],
-    [63, 255, 0, 255],
-    [255, 255, 0, 255],
-    [255, 127, 60, 255],
-    [255, 0, 0, 255],
-    [152, 0, 38, 255]
-  ];*/
-
-  const layer = new HexagonLayer({
-    id: 'hexagon-layer',
-    data: data,
-    pickable: true,
-    extruded: true,
-    getElevationWeight: d => Number(d[Object.keys(data[0])[9]]),
-    elevationAggregation: 'MAX',
-    getColorWeight: point => Number(point[Object.keys(data[0])[9]]),
-    colorAggregation: 'MAX',
-    colorRange: color,
-    radius: 7000,
-    elevationScale: scale,
-    elevationRange: [0, 3000],
-    getPosition: p => [Number(p.lng), Number(p.lat)]
+      return new BitmapLayer(props, {
+        data: null,
+        image: props.data,
+        bounds: [west, south, east, north]
+      });
+    }
   });
 
   const deckgl = new DeckGL({
@@ -224,7 +130,7 @@
     controller: {
       touchRotate: true
     },
-    getTooltip: tooltip,
+    getTooltip: "",
     layers: [
       tilelayer, layer
     ]
