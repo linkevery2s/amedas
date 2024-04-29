@@ -44,6 +44,12 @@
             right: 5px;
         }
 
+        .precip-title {
+            position: fixed;
+            top: 75px;
+            right: 5px;
+        }
+
         .btn-menu {
             position: fixed;
             top: 10px;
@@ -56,6 +62,10 @@
             cursor: pointer;
             line-height: 1;
             border-radius: .3em;
+        }
+
+        .btn-menu:hover {
+            corsor: pointer;
         }
 
         nav {
@@ -102,6 +112,54 @@
             z-index: 0;
         }
 
+        #overlay {
+            width: 100%;
+            height: 120vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, .8);
+            display: none;
+            z-index: 10;
+        }
+
+        #share, #manual {
+            left: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            max-width: 600px;
+            display: none;
+            z-index: 11;
+            background: #ffffff;
+            padding: .3em;
+        }
+
+        #title_h3 {
+            border-bottom: 3px dotted #a0d8ef;
+            padding-bottom: 3px;
+        }
+
+        #closed-btn1, #closed-btn2 {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            border-radius: 100%;
+            color: #000000;
+            border: 1px solid #000000;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+        }
+
+        #closed-btn1:hover, #closed-btn2:hover {
+            background: rgba(0, 0, 0, .5);
+            color: #ffffff;
+            border: 1px solid #ffffff;
+        }
+
         .fb_share {
             position: fixed;
             bottom: 53px;
@@ -115,6 +173,12 @@
             z-index: 1;
             background: #0095d9;
             color: #ffffff;
+        }
+
+        .home-btn:hover,
+        .manual-btn:hover,
+        .share-btn:hover {
+            cursor: pointer;
         }
     </style>
 
@@ -131,8 +195,10 @@
         console.log(update_date[0].lastupdate);
 
         const up_date = document.querySelector('.update');
+        const precip_title = document.querySelector(".precip-title");
 
         up_date.innerHTML = "データ更新日時：" + update_date[0].lastupdate;
+        precip_title.innerHTML = "３時間 降雨量";
 
         /* ナビゲーション表示 */
         const btn = document.querySelector('.btn-menu');
@@ -153,28 +219,67 @@
         map_1h.addEventListener('click', () => {
             main.innerHTML = '<iframe src="./1h.html"></iframe>';
             $('#navi').toggle();
+            precip_title.innerHTML = "１時間 降雨量";
         });
 
         map_3h.addEventListener('click', () => {
             main.innerHTML = '<iframe src="./3h.html"></iframe>';
             $('#navi').toggle();
+            precip_title.innerHTML = "３時間 降雨量";
         });
 
         map_6h.addEventListener('click', () => {
             main.innerHTML = '<iframe src="./6h.html"></iframe>';
             $('#navi').toggle();
+            precip_title.innerHTML = "６時間 降雨量";
         });
 
         map_12h.addEventListener('click', () => {
             main.innerHTML = '<iframe src="./12h.html"></iframe>';
             $('#navi').toggle();
+            precip_title.innerHTML = "12時間 降雨量";
         });
 
         map_24h.addEventListener('click', () => {
             main.innerHTML = '<iframe src="./24h.html"></iframe>';
             $('#navi').toggle();
+            precip_title.innerHTML = "24時間 降雨量";
         });
 
+        /* ポップアップ表示 */
+        const share_btn = document.querySelector('.share-btn');
+        const manual_btn = document.querySelector('.manual-btn');
+
+        const overlay = document.querySelector('#overlay');
+
+        const closed_btn1 = document.querySelector("#closed-btn1");
+        const closed_btn2 = document.querySelector("#closed-btn2");
+
+        share_btn.addEventListener('click', () => {
+            $('#overlay').fadeIn();
+            $('#share').fadeIn();
+        });
+
+        manual_btn.addEventListener('click', () => {
+            $('#overlay').fadeIn();
+            $('#manual').fadeIn();
+        });
+
+        overlay.addEventListener('click', () => {
+            $('#overlay').fadeOut();
+            $('#share').fadeOut();
+            $('#manual').fadeOut();
+        });
+
+        closed_btn1.addEventListener('click', () => {
+            $('#overlay').fadeOut();
+            $('#share').fadeOut();
+        });
+
+        closed_btn2.addEventListener('click', () => {
+            $('#overlay').fadeOut();
+            $('#manual').fadeOut();
+        });
 
     </script>
     <!-- Google tag (gtag.js) -->
@@ -218,11 +323,51 @@
 
         <div class="update text-xs"></div>
 
-    </div>
-
-    <div class="main">
+        <div class="precip-title text-xl"></div>
 
     </div>
+
+    <div class="main"></div>
+
+    <!-- ポップアップ用のoverlay -->
+    <div id="overlay"></div>
+
+    <!-- シェア -->
+    <div id="share" class="text-center"><span id="closed-btn1">×</span>
+        <h3 class="text-2xl text-center mb-3"><i class="fa-regular fa-comments"></i> シェア</h3>
+
+        <div class="mt-5 h-96 text-left px-3">
+
+            <h3 class="text-2xl mb-5" id="title_h3">アプリURL</h3>
+
+            <p class="mt-5">https://japan-precipitation.netlify.app/</p>
+
+            <h3 class="text-2xl my-5" id="title_h3">二次元バーコード</h3>
+
+            <img src="./images/qr.png" alt="QRコード">
+
+        </div>
+
+    </div>
+
+    <!-- 使い方 -->
+    <div id="manual" class="text-center"><span id="closed-btn2">×</span>
+        <h3 class="text-2xl text-center mb-3"><i class="fa-solid fa-book-open"></i> 使い方</h3>
+
+        <div class="mt-5 h-96 text-left px-3">
+
+            <h3 class="text-2xl mb-5" id="title_h3">日本の降水量を見よう！</h3>
+
+            <p class="mt-5">https://japan-precipitation.netlify.app/</p>
+
+            <h3 class="text-2xl my-5" id="title_h3">５年の歳月を経て開発</h3>
+
+
+
+        </div>
+
+    </div>
+
 
     <div class="fb_share">
 
@@ -234,7 +379,7 @@
     <div class="footer text-center pt-2">
         <div class="grid gap-4 grid-cols-3 grid-rows-1">
             <a href="./index.html">
-                <div><i class="fa-solid fa-house"></i> ホーム</div>
+                <div class="home-btn"><i class="fa-solid fa-house"></i> ホーム</div>
             </a>
             <div class="manual-btn"><i class="fa-solid fa-book-open"></i> 使い方</div>
             <div class="share-btn"><i class="fa-solid fa-comments"></i> シェア</div>
