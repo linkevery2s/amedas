@@ -87,6 +87,15 @@
             border-bottom: 1px dotted #fff;
         }
 
+        #navi li:before {
+            font-family: "Font Awesome 6 Free";
+            content: "\f054";
+            font-weight: bold;
+            position: absolute;
+            right: 1em;
+            color: #ffffff;
+        }
+
         nav li:last-child {
             border: none;
         }
@@ -123,7 +132,8 @@
             z-index: 10;
         }
 
-        #share, #manual {
+        #share,
+        #manual {
             left: 50%;
             position: absolute;
             top: 50%;
@@ -141,7 +151,8 @@
             padding-bottom: 3px;
         }
 
-        #closed-btn1, #closed-btn2 {
+        #closed-btn1,
+        #closed-btn2 {
             position: absolute;
             top: 5px;
             right: 5px;
@@ -154,7 +165,8 @@
             text-align: center;
         }
 
-        #closed-btn1:hover, #closed-btn2:hover {
+        #closed-btn1:hover,
+        #closed-btn2:hover {
             background: rgba(0, 0, 0, .5);
             color: #ffffff;
             border: 1px solid #ffffff;
@@ -189,7 +201,7 @@
         main.innerHTML = '<iframe src="./3h.html"></iframe>';
 
         /* Last Update */
-        const res = await fetch("./data/lastupdate.json");
+        const res = await fetch("https://raw.githubusercontent.com/linkevery2s/amedas/main/data/lastupdate.json");
         const update_date = await res.json();
 
         console.log(update_date[0].lastupdate);
@@ -354,13 +366,45 @@
     <div id="manual" class="text-center"><span id="closed-btn2">×</span>
         <h3 class="text-2xl text-center mb-3"><i class="fa-solid fa-book-open"></i> 使い方</h3>
 
-        <div class="mt-5 h-96 text-left px-3">
+        <div class="mt-5 h-96 overflow-y-scroll text-left px-3">
 
-            <h3 class="text-2xl mb-5" id="title_h3">日本の降水量を見よう！</h3>
+            <img src="./images/rain.jpg" class="my-5" width="100%" alt="雨の画像">
 
-            <p class="mt-5">https://japan-precipitation.netlify.app/</p>
+            <h3 class="text-2xl my-10" id="title_h3">日本の降水量を見よう！</h3>
 
-            <h3 class="text-2xl my-5" id="title_h3">５年の歳月を経て開発</h3>
+            <p class="mt-5">気象庁の<a href="https://www.data.jma.go.jp/stats/data/mdrr/docs/csv_dl_readme.html"
+                    target="_blank">気象データ</a>をもとに、日本の降水量のマッピングを試みたアプリケーションです。</p>
+
+            <p class="mt-5">最新の気象データを１時間に１回スクレイピングして、加工し、アプリケーションにて配信しています。</p>
+
+            <h3 class="text-2xl my-10" id="title_h3">７年の歳月を経て開発</h3>
+
+            <p class="mt-5">こういうアプリを作りたい！という構想から７年が経ちました。</p>
+
+            <p class="mt-5">初めは、スクレイピングのやり方が分からず断念。</p>
+
+            <p class="mt-5">スクレイピングのスキルをマスターするも、気象庁のデータはCORSが許可されておらず、クライアントサイドプログラムでは取得できないことが判明し、断念。</p>
+
+            <p class="mt-5">
+                Denoを用いて、ついにバックエンドから取得するスキルをマスターするも、今度は、文字コードがShift-JISになっており、文字化けを起こしてしまい、エンコードのやり方が分からずに断念。</p>
+
+            <p class="mt-5">文字コードの知識を学び直し、変換に成功するも、GitHub Actionsにてエラーが発生し、自動化に失敗。原因が特定できず、断念。</p>
+
+            <p class="mt-5">諦めきれず、もう一度、GitHub Actionsについて、学び直し、権限設定を修正し、ついに成功！</p>
+
+            <p class="mt-5">という挫折の時を経て、ついにアプリ化させた次第です。</p>
+
+            <h3 class="text-2xl my-10" id="title_h3">せっかくなので、雨雲レーダーも...</h3>
+
+            <p class="mt-5">日本では、ゲリラ豪雨などの集中豪雨が盛んに発生するようになりました。</p>
+
+            <p class="mt-5">今の雨雲の様子はどんな感じだろう？と雨雲レーダーを観察する習慣を身につけることが、豪雨対策の一歩ではないかと思っています。</p>
+
+            <p class="mt-5">よって、このアプリには、雨雲レーダーや気象衛星ひまわりの雲の様子のマップを掲載することにしました。</p>
+
+            <p class="mt-5">７年の歳月を経て、完成したアプリケーション。多くの方々にご覧いただけますと幸いです。</p>
+
+            <p class="mt-5">齋藤　仁志.</p>
 
 
 
