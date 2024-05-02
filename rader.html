@@ -35,6 +35,14 @@
       "version": 8,
 
       "sources": {
+        "tiri": {
+          "type": "vector",
+          "tiles": [
+            "https://cyberjapandata.gsi.go.jp/xyz/experimental_bvmap/{z}/{x}/{y}.pbf"
+            ],
+          "minzoom": 2,
+          "maxzoom": 8
+        },
         "back": {
           "type": "raster",
           "tiles": [
@@ -67,6 +75,19 @@
         "source": "back2",
         "minzoom": 2,
         "maxzoom": 18,
+      },
+      {
+        "id": "coastline",
+        "type": "line",
+        "source": "tiri",
+        "source-layer": "coastline",
+        "minzoom": 2,
+        "maxzoom": 18,
+        "filter": ["==", ["geometry-type"], "LineString"],
+        "paint": {
+          "line-color": "#fef263",
+          "line-width": 2
+        }
       }
       ]
 
@@ -76,7 +97,9 @@
       container: 'map',
       style: style,
       center: [137.779, 35.666],
-      zoom: 4,
+      Zoom: 4,
+      minZoom: 4,
+      maxZoom: 7.9,
       pitch: 50,
       bearing: -20,
       hash: true,

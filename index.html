@@ -101,7 +101,7 @@
         }
 
         nav li:hover {
-            background: rgba(195, 216, 37, 0.8); 
+            background: rgba(195, 216, 37, 0.8);
         }
 
         .main {
@@ -180,8 +180,8 @@
 
         .fb_share {
             position: fixed;
-            bottom: 53px;
-            left: 3px;
+            bottom: 58px;
+            left: 5px;
         }
 
         .footer {
@@ -202,12 +202,16 @@
         .share-btn:hover {
             cursor: pointer;
         }
+
+        .fb_iframe_widget>span {
+            vertical-align: top !important;
+        }
     </style>
 
     <script type="module">
 
         /* 初期画面 */
-$('#navi').hide();
+        $('#navi').hide();
         const main = document.querySelector('.main');
         main.innerHTML = '<iframe src="./3h.html"></iframe>';
 
@@ -227,7 +231,7 @@ $('#navi').hide();
         const btn = document.querySelector('.btn-menu');
         const nav = document.querySelector('nav');
 
-nav.style.display = "block";
+        nav.style.display = "block";
 
         btn.addEventListener('click', () => {
             $('#navi').toggle();
@@ -479,8 +483,8 @@ nav.style.display = "block";
 
     <div class="fb_share">
 
-        <div class="fb-like" data-href="https://japan-precipitation.netlify.app/" data-width=""
-            data-layout="button_count" data-action="like" data-size="small" data-share="true"></div>
+        <div class="fb-share-button" data-href="https://japan-precipitation.netlify.app/" data-layout="button_count"
+            data-size="small"></div>
 
     </div>
 
@@ -501,8 +505,8 @@ nav.style.display = "block";
 
     <!-- Facebookシェアボタン -->
     <div id="fb-root"></div>
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v16.0"
-        nonce="eVvix2r0"></script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v19.0"
+        nonce="Pm3nh7PB"></script>
 
 </body>
 
