@@ -36,10 +36,10 @@
 
 <script type="module">
 
-  const res = await fetch("https://raw.githubusercontent.com/linkevery2s/amedas/main/data/12h.json");
+  const res = await fetch("./data/12h.json");
   const data = await res.json();
 
-  const area = await fetch("https://raw.githubusercontent.com/linkevery2s/amedas/main/data/area.json");
+  const area = await fetch("./data/area.json");
   const area_data = await area.json();
 
   for (let j = 0; j < data.length; j++) {

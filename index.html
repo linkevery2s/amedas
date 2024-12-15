@@ -228,7 +228,7 @@
         main.innerHTML = '<iframe src="./3h.html"></iframe>';
 
         /* Last Update */
-        const res = await fetch("https://raw.githubusercontent.com/linkevery2s/amedas/main/data/lastupdate.json");
+        const res = await fetch("./data/lastupdate.json");
         const update_date = await res.json();
 
         console.log(update_date[0].lastupdate);
